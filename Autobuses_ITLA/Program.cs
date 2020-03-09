@@ -163,6 +163,7 @@ namespace Autobuses_ITLA
             }   
         }
 
+        //-----------------------------Para mantenimiento de autobus---------------------------------------------
         public static void mantenimiento_autobuses() 
         {
             Console.WriteLine("Que operacion desea realizar:\n\n 1- Crear autobus\n 2- Editar autobus\n 3- Listar autobuses\n 4- Borrar autobus\n 5- Volver al menu principal");
@@ -328,6 +329,27 @@ namespace Autobuses_ITLA
             listar_autobuses();
             Console.Write("Inserte la placa del autobus que desea editar: ");
             string placa = Console.ReadLine();
+
+            int contador = 0;
+            foreach (autobus item in autobuses) 
+            {
+                if (item.placa == placa) 
+                {
+                    contador++;
+                }
+            }
+
+            if (contador > 0)
+            {
+                Console.WriteLine("Placa validada!");
+            }
+            else 
+            {
+                Console.WriteLine("La placa ingresada no existe. Presione cualquier tecla para volver al menu principal.");
+                Console.ReadKey();
+                Console.Clear();
+                menu();
+            }
             Console.Clear();
 
             Console.WriteLine("\nQue desea cambiar\n 1- Marca\n 2- Modelo\n 3- Placa\n 4- Capacidad\n 5- Chofer");
@@ -532,6 +554,7 @@ namespace Autobuses_ITLA
             }
         }
 
+       
         public static void editarChofer(string placa)
         {
             int pos;
@@ -581,6 +604,7 @@ namespace Autobuses_ITLA
             }
         }
 
+        //---------------------------Para mantenimiento de choferes------------------------------------------
         public static void mantenimiento_choferes()
         {
             Console.WriteLine("Que operacion desea realizar:\n\n 1- Crear chofer\n 2- Editar chofer\n 3- Listar chofer\n 4- Asignar chofer\n 5- Borrar chofer\n 6- Volver al menu principal");
@@ -824,7 +848,7 @@ namespace Autobuses_ITLA
                 Console.WriteLine("Listado de choferes: ");
                 listar_chofer();
 
-                Console.WriteLine("Inserte el nombre del chofer que desea asignar al autobus ya seleccionado");
+                Console.WriteLine("\nInserte el nombre del chofer que desea asignar al autobus ya seleccionado");
                 string choferAsignar = Console.ReadLine();
 
                 autobus autoActualizado = new autobus();
@@ -1008,12 +1032,21 @@ namespace Autobuses_ITLA
             Console.WriteLine("Listado de rutas\n");
             listar_rutas();
 
+            int sel = 0;
+            int sel2 = 0;
 
-            Console.WriteLine("Ingrese la posicion de la ruta que desea editar: ");
-            int sel = Convert.ToInt32(Console.ReadLine());
+            try
+            {
+                Console.WriteLine("Ingrese la posicion de la ruta que desea editar: ");
+                sel = Convert.ToInt32(Console.ReadLine());
 
-            Console.WriteLine("\n 1- Editar ciudad de origen\n 2- Editar ciudad destino\n 3- Editar costo de la ruta\n 4- Editar autobus asignado\n 5- Volver al menu principal");
-            int sel2 = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("\n 1- Editar ciudad de origen\n 2- Editar ciudad destino\n 3- Editar costo de la ruta\n 4- Editar autobus asignado\n 5- Volver al menu principal");
+                sel2 = Convert.ToInt32(Console.ReadLine());
+            }
+            catch (Exception exp) 
+            {
+                Console.WriteLine("Error: {0}. Presione cualquier tecla para volver al menu de mantenimiento", exp.Message);
+            }
 
             ruta rutaActualizada = new ruta();
             mantenerCamposRutas(ref rutaActualizada, sel);
@@ -1022,19 +1055,64 @@ namespace Autobuses_ITLA
             {
                 case 1:
                     Console.WriteLine("Inserte la nueva ciudad de origen:");
-                    rutaActualizada.ciudad_origen = Console.ReadLine();
+                    try 
+                    {
+                        rutaActualizada.ciudad_origen = Console.ReadLine();
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Entrada de tipo de dato equivocada. Presione cualquier tecla para volver la menu de mantenimiento de rutas.");
+                        Console.ReadKey();
+                        Console.Clear();
+                        mantenimientoRutas();
+                    }
+                    catch (Exception exp)
+                    {
+                        Console.WriteLine("Error: {0}", exp.Message);
+                    }
                     rutas[(sel - 1)] = rutaActualizada;
                     break;
 
                 case 2:
                     Console.WriteLine("Inserte la nueva ciudad de destino:");
-                    rutaActualizada.ciudad_destino = Console.ReadLine();
+
+                    try 
+                    {
+                        rutaActualizada.ciudad_destino = Console.ReadLine();
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Entrada de tipo de dato equivocada. Presione cualquier tecla para volver la menu de mantenimiento de rutas.");
+                        Console.ReadKey();
+                        Console.Clear();
+                        mantenimientoRutas();
+                    }
+                    catch (Exception exp)
+                    {
+                        Console.WriteLine("Error: {0}",exp.Message);
+                    }
                     rutas[(sel - 1)] = rutaActualizada;
                     break;
 
                 case 3:
                     Console.WriteLine("Inserte el nuevo costo de la ruta:");
-                    rutaActualizada.costo = Convert.ToDouble(Console.ReadLine());
+
+                    try
+                    {
+                        rutaActualizada.costo = Convert.ToDouble(Console.ReadLine());
+                    }
+
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Entrada de tipo de dato equivocada. Presione cualquier tecla para volver la menu de mantenimiento de rutas.");
+                        Console.ReadKey();
+                        Console.Clear();
+                        mantenimientoRutas();
+                    }
+                    catch (Exception exp) 
+                    {
+                        Console.WriteLine(exp.Message);
+                    }
                     rutas[(sel - 1)] = rutaActualizada;
                     break;
 
@@ -1070,6 +1148,13 @@ namespace Autobuses_ITLA
                 case 5:
                     menu();
                     break;
+
+                default:
+                    Console.WriteLine("Seleccione detro de las opciones dadas.Presione cualquier tecla para volver al menu principal");
+                    Console.ReadKey();
+                    Console.Clear();
+                    menu();
+                    break;
             }
 
 
@@ -1085,17 +1170,17 @@ namespace Autobuses_ITLA
             }
             catch (FormatException)
             {
-                Console.WriteLine("Solo valores de tipo entero son aceptados. Presione cualquier tecla para volver al menu de borrado.");
+                Console.WriteLine("Solo valores de tipo entero son aceptados. Presione cualquier tecla para volver al menu de mantenimiento.");
                 Console.ReadKey();
                 Console.Clear();
-                borrarRuta();
+                mantenimientoRutas();
             }
             catch (Exception exp) 
             {
-                Console.WriteLine("Error: {0}. Presione cualquier tecla para volver al menu de borrado.", exp.Message);
+                Console.WriteLine("Error: {0}. Presione cualquier tecla para volver al menu de mantenimiento.", exp.Message);
                 Console.ReadKey();
                 Console.Clear();
-                borrarRuta();
+                mantenimientoRutas();
             }
         }
 
@@ -1133,12 +1218,24 @@ namespace Autobuses_ITLA
 
             int contador = 0;
 
-            foreach (autobus item in autobuses)
+            try
             {
-                if (item.chofer_asignado.nombre.Length > 2)
+                foreach (autobus item in autobuses)
                 {
-                    contador++;
+                    if (item.chofer_asignado.nombre.Length > 2)
+                    {
+                        contador++;
+                    }
                 }
+            }
+            catch (Exception exp) 
+            {
+                Console.WriteLine("Error: {0}. Es probable que aun no hayan autobuses con chofer asignado.\n" +
+                    " Vaya a mantenimiento de choferes y en la opcion 4 agregue uno." +
+                    " Si aun no ha creado choferes vaya primero a la opcion 1 de mantenimiento de choferes.", exp.Message);
+                Console.ReadKey();
+                Console.Clear();
+                menu();
             }
 
             if (contador == 0) 
@@ -1183,6 +1280,7 @@ namespace Autobuses_ITLA
                         Console.WriteLine("Ciudad origen: {0}", item.ciudad_origen);
                         Console.WriteLine("Ciudad destino: {0}", item.ciudad_destino);
                         Console.WriteLine("Costo de ticket : {0}", item.costo);
+                        Console.WriteLine("");
                     }
                 }
 
